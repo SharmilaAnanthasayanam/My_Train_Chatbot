@@ -7,6 +7,7 @@ An AI-powered chatbot that facilitates users in accessing Indian train time tabl
 * Streamlit
 * Mongodb Atlas
 * MySQL
+* Pandas
 * Sentence Transformer
 * SKlearn for Cosine Similarity
 * mysql-connector-python
