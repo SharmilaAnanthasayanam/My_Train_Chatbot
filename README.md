@@ -24,6 +24,9 @@ Provide the From and To locations through text or Audio
 
 <img width="950" alt="image" src="https://github.com/SharmilaAnanthasayanam/My_Train_Chatbot/assets/112562560/17e854ed-5397-4789-bcb7-9e6be2810dcb">
 
+<img width="950" alt="image" src="https://github.com/SharmilaAnanthasayanam/My_Train_Chatbot/assets/112562560/6704e8d6-1698-48a4-bd57-f26ef43bf7d5">
+
+
 ### Step 2:
 
 Exact station names has been picked up if From and To locations provided does not exist in database. 
