@@ -32,7 +32,7 @@ Select the desired station from the dropdown.
 
 ### Step 3:
 
-Selected stations appers in the Text boxes. Click Check.
+Selected stations appears in the Text boxes. Click Check.
 
 <img width="944" alt="image" src="https://github.com/SharmilaAnanthasayanam/My_Train_Chatbot/assets/112562560/efdb409b-7c81-4162-8ef0-70445c62a840">
 
