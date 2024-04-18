@@ -42,3 +42,6 @@ Trains on your route can be seen.
 
 <img width="944" alt="image" src="https://github.com/SharmilaAnanthasayanam/My_Train_Chatbot/assets/112562560/5b0f6f75-53d9-4476-b5c0-b51ebd2e53c1">
 
+<img width="944" alt="image" src="https://github.com/SharmilaAnanthasayanam/My_Train_Chatbot/assets/112562560/4a7e099c-171c-44dc-bd78-5ea1183b771b">
+
+
