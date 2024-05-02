@@ -6,6 +6,8 @@ import speech_recognition as sr
 import similar_stations
 import json
 from streamlit_lottie import st_lottie
+from streamlit_js_eval import streamlit_js_eval
+from datetime import datetime, time
 
 
 def load_lottiefile(filepath: str):
@@ -16,16 +18,25 @@ def load_lottiefile(filepath: str):
 def UI_communication(value):
       """Gets the String and displays it with the animation"""
       st.markdown(f"<h4 style='text-align: center;'>{value}</h4>", unsafe_allow_html=True)
-      lottie_streamlit = load_lottiefile("Train_Animation.json")
+      lottie_streamlit = load_lottiefile("/content/Train_Animation.json")
       st.lottie(lottie_streamlit, speed=1.0, reverse = False, height=200)
 
 def time_conversion(delta_time):
     """Converts seconds to hh:mm:ss format"""
     # Calculate the number of hours, minutes, and seconds
     hours = delta_time.seconds // 3600
+    if hours < 10:
+      hours = f"0{hours}"
     minutes = (delta_time.seconds % 3600) // 60
+    if minutes < 10:
+      minutes = f"0{minutes}"
     seconds = delta_time.seconds % 60
-    return f"{hours}:{minutes}:{seconds}"
+    if seconds < 10:
+      seconds = f"0{seconds}"
+    time_str = f"{hours}:{minutes}:{seconds}"
+    # Convert string to time object
+    time_obj = datetime.strptime(time_str, "%H:%M:%S").time()
+    return time_obj
 
 def audio_to_text(audio_path):
   """converts .wav file to text"""
@@ -50,16 +61,35 @@ def display_train_details(source, destination):
   names = train_df["Train Name"].unique()
   placeholder.empty()
   with placeholder.container():
-    # st.write(names)
-    if names[0]:
-      st.write(":blue[Please find the trains on your route]")
+    if len(names):
       for train_name in names:
-          with st.expander(f":green[{train_name}]"):
+          source_data = train_df.loc[(train_df["Train Name"]==train_name) & (train_df["Station Name"]==source.upper())]
+          destination_data = train_df.loc[(train_df["Train Name"]==train_name) & (train_df["Station Name"]==destination.upper() )]
+          Train_no = source_data["Train No"].iloc[0]
+          origin_station = source_data["Station Name"].iloc[0]
+          src_arrival_time = source_data[["Departure Time"]].iloc[0,0]
+          dest_station = destination_data["Station Name"].iloc[0]
+          dest_arrival_time = destination_data[["Arrival Time"]].iloc[0,0]
+          src_datetime = datetime.combine(datetime.today(), src_arrival_time)
+          dest_datetime = datetime.combine(datetime.today(), dest_arrival_time)
+          duration = dest_datetime - src_datetime
+          hours = duration.seconds // 3600
+          minutes = (duration.seconds % 3600) // 60
+          seconds = duration.seconds % 60
+          Duration = f"{hours} hrs {minutes} mins {seconds} secs"
+          text = f"Train Name \t \t: {train_name} \n {origin_station} \t: {src_arrival_time} \n {dest_station} \t: {dest_arrival_time} \n Duration \t \t \t: {Duration} "
+          st.text_area(f":green[**Train No: {Train_no}**]", text)
+          with st.expander(f":blue[Train Full TimeTable]"):
               st.table(train_df.loc[train_df["Train Name"]==train_name])
     else:
       st.write("No trains found on your route")
-      
-st.title(":orange[My Train Chatbot :metro:]")
+
+col1, col2 = st.columns([0.85,0.15])
+with col1:
+  st.title(":orange[My Train Chatbot ]:metro:")
+with col2: 
+  if st.button("Home"):
+    streamlit_js_eval(js_expressions="parent.window.location.reload()")
 
 #Getting From and To locations as Text input 
 placeholder = st.empty()
@@ -77,6 +107,8 @@ def get_audio():
 
 with audio_holder.container():
   audio_bytes = get_audio()
+  st.write(":blue[Please provide voice input with 'From and To' pattern. \n Example: \
+    I want to check trains that goes from chennai to banglore.]")
 
 anime_holder = st.empty()
 if audio_bytes:
@@ -85,10 +117,12 @@ if audio_bytes:
   audio_path = "audio_file.wav"
   with open(audio_path, "wb") as f:
     f.write(audio_bytes)
+  
+  #Audio to Text Conversion
   text = audio_to_text(audio_path)
   anime_holder.empty()
   with text_holder.container():
-    st.write(f":blue[Your input: ] {text}")
+    st.write(f":green[Your input: ] {text}")
   with anime_holder.container():
     UI_communication("Loading...")
   text.lower()
@@ -170,6 +204,7 @@ if source and destination:
           display_train_details(source, destination)
           check_holder.empty()
           # placeholder.empty()
+
       
         
       
